@@ -5,8 +5,8 @@
   "author": "@ShivrajRath",
   "license": "MIT",
   "scripts": {
-    "serve:api": "nodemon -r esm apps/carousel-api/src",
-    "serve:client": ""
+    "start": "node -r esm apps/carousel-api/src",
+    "lint": "eslint **/*.js"
   },
   "dependencies": {
     "@hapi/hapi": "^18.3.1",
@@ -14,7 +14,6 @@
   },
   "devDependencies": {
     "eslint": "^5.16.0",
-    "esm": "^3.2.25",
-    "nodemon": "^1.19.1"
+    "esm": "^3.2.25"
   }
 }
