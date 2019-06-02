@@ -1,0 +1,20 @@
+{
+  "name": "place-carousel",
+  "version": "0.0.0",
+  "description": "To show carousel of images for a given place",
+  "author": "@ShivrajRath",
+  "license": "MIT",
+  "scripts": {
+    "serve:api": "nodemon -r esm apps/carousel-api/src",
+    "serve:client": ""
+  },
+  "dependencies": {
+    "@hapi/hapi": "^18.3.1",
+    "flickrapi": "^0.6.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "esm": "^3.2.25",
+    "nodemon": "^1.19.1"
+  }
+}
