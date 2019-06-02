@@ -3,7 +3,7 @@ import QueryHandler from './app/query-handler';
 import FlickrHandler from './app/flickr-handler';
 import {
   environment
-} from '../environments/environment'
+} from '../environments/environment';
 
 const init = async () => {
   const server = Hapi.server({

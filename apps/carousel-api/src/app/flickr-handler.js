@@ -3,10 +3,10 @@
  */
 
 import flickrapi from 'flickrapi';
-import CacheHandler from './cache-handler'
+import CacheHandler from './cache-handler';
 import {
   environment
-} from '../../environments/environment'
+} from '../../environments/environment';
 
 
 let flickrAPI;
@@ -66,7 +66,7 @@ export default class FlickrHandler {
             this.placeID = null;
           }
           resolve(this);
-        })
+        });
       }
     });
   }
@@ -82,15 +82,15 @@ export default class FlickrHandler {
     id,
     secret
   }) {
-    return `https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_b.jpg`
+    return `https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_b.jpg`;
   }
 
   getEmpty() {
     return {
-      "page": this.page,
-      "perpage": this.count,
-      "photo": []
-    }
+      page: this.page,
+      perpage: this.count,
+      photo: []
+    };
   }
 
   /**
@@ -102,7 +102,7 @@ export default class FlickrHandler {
         return {
           title: img.title,
           url: this.getImageURL(img)
-        }
+        };
       });
       return data.photos;
     } catch (ex) {
@@ -115,7 +115,7 @@ export default class FlickrHandler {
    * Returns Images for a place ID
    */
   async getImages() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       flickrAPI.photos.search({
         page: this.page,
         safe_search: true,
@@ -125,7 +125,7 @@ export default class FlickrHandler {
         if (!err) {
           resolve(this.transform(data));
         } else {
-          resolve(this.getEmpty())
+          resolve(this.getEmpty());
         }
       });
     });
