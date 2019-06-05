@@ -46,7 +46,10 @@ export default class FlickrHandler {
    * @param {string} placeKey user entered key for a place (e.g NYC, Seattle)
    */
   async getPlaceID() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+      if(!flickrAPI){
+        reject();
+      }
       this.placeID = CacheHandler.getFromCache(this.place);
       if (this.placeID) {
         resolve(this);
@@ -100,6 +103,7 @@ export default class FlickrHandler {
     try {
       data.photos.photo = data.photos.photo.map(img => {
         return {
+          id: img.id,
           title: img.title,
           url: this.getImageURL(img)
         };
