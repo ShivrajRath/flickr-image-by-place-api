@@ -3,6 +3,10 @@
 This application exposes public api to get images for a particular location.
 It uses node.js' [`flickrapi`](https://www.npmjs.com/package/flickrapi) package to call flickr apis.
 
+## Run locally
+Provide flickr apiKey in environment.js 
+Run `yarn start` to start the node.js server. By default it would run on `3333` port of localhost
+
 ## Usage
 
 ### Getting images for a particular location:
@@ -32,6 +36,6 @@ Steps:
 
 1. Prevent api key expiry by handling rate limit threshold
 2. A better logging framework
-3. 
+
 
 
