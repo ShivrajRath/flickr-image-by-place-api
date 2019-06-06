@@ -1,7 +1,7 @@
 {
   "name": "place-carousel",
   "version": "0.0.0",
-  "description": "To show carousel of images for a given place",
+  "description": "API to get images from flickr for a particular location",
   "author": "@ShivrajRath",
   "license": "MIT",
   "scripts": {
