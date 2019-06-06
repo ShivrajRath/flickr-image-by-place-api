@@ -2,21 +2,14 @@
  * This is a collection on queries to flickr api
  */
 
-import flickrapi from 'flickrapi';
-import CacheHandler from './cache-handler';
-import {
-  environment
-} from '../../environments/environment';
-
+import flickrapi from "flickrapi";
+import CacheHandler from "./cache-handler";
+import { environment } from "../../environments/environment";
 
 let flickrAPI;
 
 export default class FlickrHandler {
-  constructor({
-    place,
-    page = 1,
-    count = 10
-  }) {
+  constructor({ place, page = 1, count = 10 }) {
     this.place = place;
     this.page = page;
     this.count = count;
@@ -28,16 +21,19 @@ export default class FlickrHandler {
    */
   static async public_auth() {
     new Promise((resolve, reject) => {
-      flickrapi.tokenOnly({
-        api_key: environment.apiKey
-      }, (err, flickr) => {
-        if (!err) {
-          flickrAPI = flickr;
-          resolve();
-        } else {
-          reject(err);
+      flickrapi.tokenOnly(
+        {
+          api_key: environment.apiKey
+        },
+        (err, flickr) => {
+          if (!err) {
+            flickrAPI = flickr;
+            resolve();
+          } else {
+            reject(err);
+          }
         }
-      });
+      );
     });
   }
 
@@ -47,29 +43,32 @@ export default class FlickrHandler {
    */
   async getPlaceID() {
     return new Promise((resolve, reject) => {
-      if(!flickrAPI){
+      if (!flickrAPI) {
         reject();
       }
       this.placeID = CacheHandler.getFromCache(this.place);
       if (this.placeID) {
         resolve(this);
       } else {
-        flickrAPI.places.find({
-          query: this.place
-        }, (err, data) => {
-          try {
-            if (!err) {
-              // Returns the first found place id, 
-              // expects users to be as specific in their search
-              this.placeID = data.places.place[0].place_id;
-              CacheHandler.setToCache(this.place, this.placeID);
+        flickrAPI.places.find(
+          {
+            query: this.place
+          },
+          (err, data) => {
+            try {
+              if (!err) {
+                // Returns the first found place id,
+                // expects users to be as specific in their search
+                this.placeID = data.places.place[0].place_id;
+                CacheHandler.setToCache(this.place, this.placeID);
+              }
+            } catch (ex) {
+              console.log(ex);
+              this.placeID = null;
             }
-          } catch (ex) {
-            console.log(ex);
-            this.placeID = null;
+            resolve(this);
           }
-          resolve(this);
-        });
+        );
       }
     });
   }
@@ -77,14 +76,9 @@ export default class FlickrHandler {
   /**
    * Returns image URL from image object
    * Reference: https://www.flickr.com/services/api/misc.urls.html
-   * @param {Object} imgObj 
+   * @param {Object} imgObj
    */
-  getImageURL({
-    farm,
-    server,
-    id,
-    secret
-  }) {
+  getImageURL({ farm, server, id, secret }) {
     return `https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_b.jpg`;
   }
 
@@ -102,12 +96,14 @@ export default class FlickrHandler {
   transform(data) {
     try {
       data.photos.photo = data.photos.photo.map(img => {
-        return {
-          id: img.id,
-          title: img.title,
-          url: this.getImageURL(img)
-        };
-      });
+        if (img.farm && img.server && img.id && img.secret) {
+          return {
+            id: img.id,
+            title: img.title,
+            url: this.getImageURL(img)
+          };
+        }
+      }).filter(photo => photo);
       return data.photos;
     } catch (ex) {
       console.log(ex);
@@ -119,19 +115,22 @@ export default class FlickrHandler {
    * Returns Images for a place ID
    */
   async getImages() {
-    return new Promise((resolve) => {
-      flickrAPI.photos.search({
-        page: this.page,
-        safe_search: true,
-        per_page: this.count,
-        place_id: this.placeID
-      }, (err, data) => {
-        if (!err) {
-          resolve(this.transform(data));
-        } else {
-          resolve(this.getEmpty());
+    return new Promise(resolve => {
+      flickrAPI.photos.search(
+        {
+          page: this.page,
+          safe_search: true,
+          per_page: this.count,
+          place_id: this.placeID
+        },
+        (err, data) => {
+          if (!err) {
+            resolve(this.transform(data));
+          } else {
+            resolve(this.getEmpty());
+          }
         }
-      });
+      );
     });
   }
 }
