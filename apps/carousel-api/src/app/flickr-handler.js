@@ -10,7 +10,7 @@ let flickrAPI;
 
 export default class FlickrHandler {
   constructor({ place, page = 1, count = 10 }) {
-    this.place = place;
+    this.place = place.trim();
     this.page = page;
     this.count = count;
     return this;
@@ -23,13 +23,16 @@ export default class FlickrHandler {
     new Promise((resolve, reject) => {
       flickrapi.tokenOnly(
         {
-          api_key: environment.apiKey
+          api_key: environment.apiKey,
+          secret: environment.apiSecret,
+          progress: false
         },
         (err, flickr) => {
           if (!err) {
             flickrAPI = flickr;
             resolve();
           } else {
+            console.log(err);
             reject(err);
           }
         }
@@ -42,12 +45,14 @@ export default class FlickrHandler {
    * @param {string} placeKey user entered key for a place (e.g NYC, Seattle)
    */
   async getPlaceID() {
+    // console.debug("in getPlaceID");
     return new Promise((resolve, reject) => {
       if (!flickrAPI) {
         reject();
       }
       this.placeID = CacheHandler.getFromCache(this.place);
       if (this.placeID) {
+        // console.debug("found placeid from cache");
         resolve(this);
       } else {
         flickrAPI.places.find(
@@ -60,6 +65,7 @@ export default class FlickrHandler {
                 // Returns the first found place id,
                 // expects users to be as specific in their search
                 this.placeID = data.places.place[0].place_id;
+                // console.debug("found placeid api");
                 CacheHandler.setToCache(this.place, this.placeID);
               }
             } catch (ex) {
@@ -95,15 +101,18 @@ export default class FlickrHandler {
    */
   transform(data) {
     try {
-      data.photos.photo = data.photos.photo.map(img => {
-        if (img.farm && img.server && img.id && img.secret) {
-          return {
-            id: img.id,
-            title: img.title,
-            url: this.getImageURL(img)
-          };
-        }
-      }).filter(photo => photo);
+      // console.debug("in transform data");
+      data.photos.photo = data.photos.photo
+        .map(img => {
+          if (img.farm && img.server && img.id && img.secret) {
+            return {
+              id: img.id,
+              title: img.title,
+              url: this.getImageURL(img)
+            };
+          }
+        })
+        .filter(photo => photo);
       return data.photos;
     } catch (ex) {
       console.log(ex);
@@ -116,10 +125,17 @@ export default class FlickrHandler {
    */
   async getImages() {
     return new Promise(resolve => {
+      // console.debug("making place_id photo search");
       flickrAPI.photos.search(
         {
           page: this.page,
           safe_search: true,
+          privacy_filter: 1,
+          content_type: 1,
+          sort: "relevance",
+          media: "photos",
+          tags: this.place,
+          geo_context: 2,
           per_page: this.count,
           place_id: this.placeID
         },
@@ -127,6 +143,7 @@ export default class FlickrHandler {
           if (!err) {
             resolve(this.transform(data));
           } else {
+            console.log(err);
             resolve(this.getEmpty());
           }
         }
