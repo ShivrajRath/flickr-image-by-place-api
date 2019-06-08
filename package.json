@@ -10,13 +10,13 @@
   },
   "dependencies": {
     "@hapi/hapi": "^18.3.1",
-    "flickrapi": "^0.6.2"
+    "flickrapi": "^0.6.2",
+    "esm": "^3.2.25"
   },
   "engines": {
     "node": "10.x"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
-    "esm": "^3.2.25"
+    "eslint": "^5.16.0"
   }
 }
