@@ -32,6 +32,10 @@ Steps:
 2. Get `photos` from the `place_id` using `flickr.photos.search`
 3. Form the URL for the `photo` using [misc.urls](https://www.flickr.com/services/api/misc.urls.html)
 
+## Try it
+
+You can try the application on [Heroku](https://aqueous-badlands-88028.herokuapp.com/images/NYC/1)
+
 ## Out of scope (Should be developed for future)
 
 1. Prevent api key expiry by handling rate limit threshold
