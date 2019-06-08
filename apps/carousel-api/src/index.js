@@ -8,7 +8,6 @@ const init = async () => {
     port: environment.port,
     host: environment.host
   });
-  server.connection({ routes: { cors: true } });
 
   // creates the flickr API object
   FlickrHandler.public_auth();
@@ -18,7 +17,13 @@ const init = async () => {
     method: "GET",
     path: "/images/{place}/{page}/{count?}",
     handler: async (request, reply) =>
-      await QueryHandler.getGeoImages(request, reply)
+      await QueryHandler.getGeoImages(request, reply),
+    config: {
+      cors: {
+        origin: ["*"],
+        additionalHeaders: ["cache-control", "x-requested-with"]
+      }
+    }
   });
 
   // 404 default
