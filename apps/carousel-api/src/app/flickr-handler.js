@@ -132,7 +132,7 @@ export default class FlickrHandler {
         safe_search: true,
         privacy_filter: 1,
         content_type: 1,
-        sort: "relevance",
+        sort: "interestingness-desc",
         media: "photos",
         tags: this.place,
         geo_context: 2,
