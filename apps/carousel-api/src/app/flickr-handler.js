@@ -25,10 +25,7 @@ export default class FlickrHandler {
         {
           api_key: environment.apiKey,
           secret: environment.apiSecret,
-          progress: false,
-          requestOptions: {
-            timeout: 5000
-          }
+          progress: false
         },
         (err, flickr) => {
           if (!err) {
