@@ -27,7 +27,7 @@ export default class FlickrHandler {
           secret: environment.apiSecret,
           progress: false,
           requestOptions: {
-            timeout: 3000
+            timeout: 5000
           }
         },
         (err, flickr) => {
