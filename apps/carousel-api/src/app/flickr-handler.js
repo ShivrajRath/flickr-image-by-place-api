@@ -45,12 +45,13 @@ export default class FlickrHandler {
    * @param {string} placeKey user entered key for a place (e.g NYC, Seattle)
    */
   async getPlaceID() {
+    const self = this;
     console.log(`Fetching place id for ${this.place}`);
     // races to timeout
     return Promise.race([
       new Promise((resolve, reject) => {
         if (!flickrAPI) {
-          this.public_auth();
+          self.public_auth();
           reject();
         }
         this.placeID = CacheHandler.getFromCache(this.place);
