@@ -24,8 +24,7 @@ export default class FlickrHandler {
       flickrapi.tokenOnly(
         {
           api_key: environment.apiKey,
-          secret: environment.apiSecret,
-          progress: false
+          secret: environment.apiSecret
         },
         (err, flickr) => {
           if (!err) {
@@ -46,6 +45,7 @@ export default class FlickrHandler {
    * @param {string} placeKey user entered key for a place (e.g NYC, Seattle)
    */
   async getPlaceID() {
+    console.log(`Fetching place id for ${this.place}`);
     // races to timeout
     return Promise.race([
       new Promise((resolve, reject) => {
