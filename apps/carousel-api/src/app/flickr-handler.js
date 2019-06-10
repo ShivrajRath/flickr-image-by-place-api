@@ -46,37 +46,43 @@ export default class FlickrHandler {
    * @param {string} placeKey user entered key for a place (e.g NYC, Seattle)
    */
   async getPlaceID() {
-    return new Promise((resolve, reject) => {
-      if (!flickrAPI) {
-        reject();
-      }
-      this.placeID = CacheHandler.getFromCache(this.place);
-      if (this.placeID) {
-        console.log(`found placeid from ${this.place} cache`);
-        resolve(this);
-      } else {
-        flickrAPI.places.find(
-          {
-            query: this.place
-          },
-          (err, data) => {
-            try {
-              if (!err) {
-                // Returns the first found place id,
-                // expects users to be as specific in their search
-                this.placeID = data.places.place[0].place_id;
-                console.log(`found placeid for ${this.place}`);
-                CacheHandler.setToCache(this.place, this.placeID);
+    // races to timeout
+    return Promise.race([
+      new Promise((resolve, reject) => {
+        if (!flickrAPI) {
+          reject();
+        }
+        this.placeID = CacheHandler.getFromCache(this.place);
+        if (this.placeID) {
+          console.log(`found placeid from ${this.place} cache`);
+          resolve(this);
+        } else {
+          flickrAPI.places.find(
+            {
+              query: this.place
+            },
+            (err, data) => {
+              try {
+                if (!err) {
+                  // Returns the first found place id,
+                  // expects users to be as specific in their search
+                  this.placeID = data.places.place[0].place_id;
+                  console.log(`found placeid for ${this.place}`);
+                  CacheHandler.setToCache(this.place, this.placeID);
+                }
+              } catch (ex) {
+                console.log(ex);
+                this.placeID = null;
               }
-            } catch (ex) {
-              console.log(ex);
-              this.placeID = null;
+              resolve(this);
             }
-            resolve(this);
-          }
-        );
-      }
-    });
+          );
+        }
+      }),
+      new Promise((resolve, reject) =>
+        setTimeout(() => reject(new Error("fetch timeout")), 3000)
+      )
+    ]);
   }
 
   /**
