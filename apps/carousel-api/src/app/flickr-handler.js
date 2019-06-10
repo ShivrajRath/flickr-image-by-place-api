@@ -49,10 +49,13 @@ export default class FlickrHandler {
     console.log(`Fetching place id for ${this.place}`);
     // races to timeout
     return Promise.race([
-      new Promise((resolve, reject) => {
+      new Promise(async (resolve, reject) => {
         if (!flickrAPI) {
-          self.public_auth();
-          reject();
+          await self.public_auth();
+          // still not available
+          if (!flickrAPI) {
+            reject();
+          }
         }
         this.placeID = CacheHandler.getFromCache(this.place);
         if (this.placeID) {
