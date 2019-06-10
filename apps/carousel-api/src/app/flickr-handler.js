@@ -21,10 +21,10 @@ export default class FlickrHandler {
    */
   static async public_auth() {
     new Promise((resolve, reject) => {
+      console.log("Trying flickr public auth");
       flickrapi.tokenOnly(
         {
-          api_key: environment.apiKey,
-          secret: environment.apiSecret
+          api_key: environment.apiKey
         },
         (err, flickr) => {
           if (!err) {
@@ -50,6 +50,7 @@ export default class FlickrHandler {
     return Promise.race([
       new Promise((resolve, reject) => {
         if (!flickrAPI) {
+          this.public_auth();
           reject();
         }
         this.placeID = CacheHandler.getFromCache(this.place);
