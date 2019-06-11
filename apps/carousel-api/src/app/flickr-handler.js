@@ -94,6 +94,15 @@ export default class FlickrHandler {
     return `https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_b.jpg`;
   }
 
+  /**
+   * Returns low res image URL from image object
+   * Reference: https://www.flickr.com/services/api/misc.urls.html
+   * @param {Object} imgObj
+   */
+  getLowResImageURL({ farm, server, id, secret }) {
+    return `https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_m.jpg`;
+  }
+
   getEmpty() {
     return {
       page: this.page,
@@ -113,7 +122,8 @@ export default class FlickrHandler {
             return {
               id: img.id,
               title: img.title,
-              url: this.getImageURL(img)
+              url: this.getImageURL(img),
+              lowResURL: this.getLowResImageURL(img)
             };
           }
         })
