@@ -26,6 +26,19 @@ const init = async () => {
     }
   });
 
+  // dummy call to wake up dyno
+  server.route({
+    method: "GET",
+    path: "/wakeup",
+    handler: (_, reply) => reply.response("ok"),
+    config: {
+      cors: {
+        origin: ["*"],
+        additionalHeaders: ["cache-control", "x-requested-with"]
+      }
+    }
+  });
+
   // 404 default
   server.route({
     method: "*",
