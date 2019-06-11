@@ -16,6 +16,10 @@
   "engines": {
     "node": "10.x"
   },
+  "cacheDirectories": [
+    "node_modules",
+    "data"
+  ],
   "devDependencies": {
     "eslint": "^5.16.0"
   }
