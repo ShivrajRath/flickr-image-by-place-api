@@ -81,7 +81,7 @@ export default class FlickrHandler {
           );
         }
       }),
-      new Promise(resolve => setTimeout(() => resolve(this), 4000))
+      new Promise(resolve => setTimeout(() => resolve(this), 2000))
     ]);
   }
 
