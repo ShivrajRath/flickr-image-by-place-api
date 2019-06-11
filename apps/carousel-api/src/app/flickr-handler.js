@@ -45,17 +45,14 @@ export default class FlickrHandler {
    * @param {string} placeKey user entered key for a place (e.g NYC, Seattle)
    */
   async getPlaceID() {
-    const self = this;
+    //const self = this;
     console.log(`Fetching place id for ${this.place}`);
     // races to timeout
     return Promise.race([
-      new Promise(async (resolve, reject) => {
+      new Promise((resolve, reject) => {
         if (!flickrAPI) {
-          await self.public_auth();
-          // still not available
-          if (!flickrAPI) {
-            reject();
-          }
+          console.log("could not find flickrAPI object");
+          reject();
         }
         this.placeID = CacheHandler.getFromCache(this.place);
         if (this.placeID) {
@@ -154,6 +151,7 @@ export default class FlickrHandler {
 
       flickrAPI.photos.search(queryObj, (err, data) => {
         if (!err) {
+          console.log(`Photo search completed for ${this.place}`);
           resolve(this.transform(data));
         } else {
           console.log(err);
